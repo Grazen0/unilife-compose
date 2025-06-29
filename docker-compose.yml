@@ -1,0 +1,54 @@
+services:
+  frontend:
+    container_name: "frontend"
+    image: "grazen/unilife-web:latest"
+    env_file: "frontend.env"
+    expose:
+      - "3000"
+    depends_on:
+      - "backend"
+    restart: "always"
+
+  backend:
+    container_name: "backend"
+    image: "grazen/unilife:latest"
+    env_file: "backend.env"
+    expose:
+      - "8080"
+    depends_on:
+      - "db"
+    restart: "always"
+
+  db:
+    container_name: "db"
+    image: "postgres:17"
+    env_file: "db.env"
+    expose:
+      - "5432"
+    ports:
+      - "5555:5432" # For local use
+    volumes:
+      - "db_data:/var/lib/postgresql/data"
+    restart: "always"
+
+  caddy:
+    container_name: "caddy"
+    image: "caddy:latest"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+      - "8443:8443"
+    volumes:
+      - "./Caddyfile:/etc/caddy/Caddyfile"
+      - "caddy_data:/data"
+      - "caddy_config:/config"
+    depends_on:
+      - "frontend"
+      - "backend"
+    restart: "unless-stopped"
+
+volumes:
+  db_data:
+  caddy_data:
+  caddy_config:
