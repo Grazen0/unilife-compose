@@ -3,6 +3,17 @@ www.unilife.lat {
 }
 
 unilife.lat {
+    header {
+        Content-Security-Policy "
+            default-src 'self';
+            script-src 'self' 'unsafe-inline' https://accounts.google.com https://apis.google.com;
+            style-src 'self' 'unsafe-inline';
+            img-src 'self' data: blob: https:;
+            connect-src 'self' https://accounts.google.com https://api.unilife.lat;
+            frame-src https://accounts.google.com;
+        "
+    }
+
     reverse_proxy frontend:3000
 }
 
